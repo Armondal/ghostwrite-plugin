@@ -49,18 +49,35 @@ class Ghostwrite_Core {
         $long_context    = $inputs['long_context'] ?? '';
         $reference_image = $inputs['reference_image'] ?? '';
 
-        // Next: Construct the prompt string
+        // Construct the prompt string
         $system_prompt = "You are an expert ghostwriter. Write a post adhering to these author details: {$author_details}. Here is the specific context and instructions: {$long_context}.";
 
+        // Call the WP 7.0 AI Client
         $response = wp_ai_generate_text( array(
             'prompt' => $system_prompt,
             'images' => $reference_image ? array( $reference_image ) : array()
         ) );
 
+        // Stop if the API request failed
         if ( is_wp_error( $response ) ) {
             return $response;
         }
 
-        return $response['text'];
+        // Save the text to the database and return the new Post ID
+        return $this->save_generated_post( $response['text'] );
+    }
+
+    /**
+     * Saves the generated text as a draft post.
+     */
+    private function save_generated_post( $content ) {
+        $post_data = array(
+            'post_title'   => 'Ghostwritten Draft', 
+            'post_content' => $content,
+            'post_status'  => 'draft',
+            'post_author'  => get_current_user_id(),
+        );
+
+        return wp_insert_post( $post_data );
     }
 }
