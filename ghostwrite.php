@@ -17,4 +17,5 @@ require_once plugin_dir_path( __FILE__ ) . 'admin/class-ghostwrite-admin.php';
 
 
 // Initialize the plugin
-$ghostwrite = new Ghostwrite_Core();
+$ghostwrite      = new Ghostwrite_Core();
+$ghostwrite_admin = new Ghostwrite_Admin();
