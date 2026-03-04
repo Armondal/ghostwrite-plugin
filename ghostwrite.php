@@ -12,6 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; 
 }
 
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-ghostwrite-core.php';
+
 class Ghostwrite_Core {
 
     /**
@@ -28,6 +30,7 @@ class Ghostwrite_Core {
         // We will build out our wp_register_ability() logic here next.
     }
 }
+
 
 // Initialize the plugin
 $ghostwrite = new Ghostwrite_Core();

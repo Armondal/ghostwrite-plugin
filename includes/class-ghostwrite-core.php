@@ -42,6 +42,25 @@ class Ghostwrite_Core {
     }
     
     public function generate_post_content( $inputs ) {
-        // This is where we will handle the logic and send the prompt to the API later
+        // Extract the data safely
+        $author_details  = $inputs['author_details'] ?? '';
+        $external_urls   = $inputs['external_urls'] ?? array();
+        $past_posts      = $inputs['past_posts'] ?? array();
+        $long_context    = $inputs['long_context'] ?? '';
+        $reference_image = $inputs['reference_image'] ?? '';
+
+        // Next: Construct the prompt string
+        $system_prompt = "You are an expert ghostwriter. Write a post adhering to these author details: {$author_details}. Here is the specific context and instructions: {$long_context}.";
+
+        $response = wp_ai_generate_text( array(
+            'prompt' => $system_prompt,
+            'images' => $reference_image ? array( $reference_image ) : array()
+        ) );
+
+        if ( is_wp_error( $response ) ) {
+            return $response;
+        }
+
+        return $response['text'];
     }
 }
